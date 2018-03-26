@@ -54,8 +54,16 @@ b = tf.get_variable('biases', initializer = tf.constant(0.0))
 # Step 4
 Y_predicted = ((w*X) + b)
 #tf.add(tf.multiply(w, X), b)
+
 # Step 5
 loss = tf.square(Y - Y_predicted, name='loss')
+#loss = utils.huber_loss(Y, Y_predicted)
+
+# def huber_loss(labels = Y, predictions = Y_predicted, delta=14.0):
+	# residual = tf.abs(labels - predictions)
+	# def f1(): return 0.5 * tf.square(residual)
+	# def f2(): return delta * residual - 0.5 * tf.square(delta)
+	# return tf.cond(residual < delta, f1, f2)
 
 # Step 6
 optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.001).minimize(loss)
@@ -77,7 +85,7 @@ with tf.Session() as sess:
 			plot_loss.append(l) 
 			total_loss += l
 
-		#print('Epoch {0}: {1}'.format(i, total_loss/n_samples))
+		print('Epoch {0}: {1}'.format(i, total_loss/n_samples))
 
 	writer.close()
 	
@@ -87,7 +95,7 @@ with tf.Session() as sess:
 print('Took: %f seconds' %(time.time() - start))
 
 #uncomment the following lines to see the plot 
-plt.plot(plot_loss[:], label = 'MSE')
+plt.plot(plot_loss[:], label = 'MSE')#or hube loss
 plt.legend()
 plt.show()
 plt.plot(data[:,0], data[:,1], 'bo', label='Real data')
